@@ -1,0 +1,51 @@
+[
+	{
+		"id": 1,
+		"ville": "Paris",
+		"prenom": "Giacomo",
+		"nom": "Guilizzoni",
+		"right": "admin"
+	},
+	{
+		"id": 2,
+		"ville": "Grenoble",
+		"prenom": "Marco",
+		"nom": "Tuttofare",
+		"right": "read"
+	},
+	{
+		"id": 3,
+		"ville": "Lyon",
+		"prenom": "Mariah",
+		"nom": "Maclachlan",
+		"right": "read"
+	},
+	{
+		"id": 4,
+		"ville": "Geneve",
+		"prenom": "Valerie",
+		"nom": "Liberty",
+		"right": "admin"
+	},
+	{
+		"id": 5,
+		"ville": "Marseille",
+		"prenom": "Thomas",
+		"nom": "Chuster",
+		"right": "admin"
+	},
+	{
+		"id": 6,
+		"ville": "Marseille",
+		"prenom": "Alice",
+		"nom": "Chuster",
+		"right": "read"
+	},
+	{
+		"id": 7,
+		"ville": "Paris",
+		"prenom": "Julien",
+		"nom": "Assange",
+		"right": "admin"
+	}
+]

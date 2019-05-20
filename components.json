@@ -1,0 +1,58 @@
+{
+  "components": [
+    {
+      "code": "report",
+      "component_identifier": "product",
+      "children":[
+        {
+          "code": "dashboard",
+          "component_identifier": "subproduct",
+          "children": [
+            {
+              "code": "form",
+              "component_identifier": "form",
+              "children": [
+                {
+                  "code": "dropdown",
+                  "component_identifier": "dropdown",
+                  "data": [
+                    {
+                      "id": "paris",
+                      "label": "Paris"
+                    },
+                    {
+                      "id": "grenoble",
+                      "label": "Grenoble"
+                    },
+                    {
+                      "id": "lyon",
+                      "label": "Lyon"
+                    },
+                    {
+                      "id": "geneve",
+                      "label": "Geneve"
+                    },
+                    {
+                      "id": "marseille",
+                      "label": "Marseille"
+                    }
+
+                  ]
+                },
+                {
+                  "code": "search",
+                  "component_identifier": "search"
+                }
+
+              ]
+            },
+            {
+              "code": "table",
+              "component_identifier": "table"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
