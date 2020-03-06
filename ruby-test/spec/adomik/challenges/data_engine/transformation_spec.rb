@@ -53,13 +53,23 @@ describe Adomik::Challenges::DataEngine::Transformation do
     end
 
     context 'when params does not match to required_params' do
-      let(:required_params) { 'String' }
-      let(:params) { 1 }
+      [
+        ['String', 1],
+        ['Integer', 'Hello World'],
+        ['Float', 4],
+        [{ 'name': 'String', 'age': 'Integer' }, { 'age': 1 }],
+        [{ 'name': 'String', 'age': { '$Optional' => 'Integer' } }, { 'name': 'name', 'age': 'Hello' }],
+        [[{ 'age': 'Integer' }], [{ 'age': 4 }, { 'age': 12 }, {}]]
+      ].each do |required_params, params|
+        context "With required_params #{required_params.to_json} and params #{params.to_json}" do
+          let(:required_params) { required_params }
+          let(:params) { params }
 
-      it 'returns false' do
-        expect(template.validate).to be
-        expect(subject).not_to be
-        expect(transformation.errors).not_to be_empty
+          it 'returns true' do
+            expect(subject).not_to be
+            expect(transformation.errors).not_to be_empty
+          end
+        end
       end
     end
 
@@ -81,10 +91,22 @@ describe Adomik::Challenges::DataEngine::Transformation do
       end
     end
 
-    context 'when params does match to required_params' do
-      it 'returns true' do
-        expect(subject).to be
-        expect(transformation.errors).to be_empty
+    context 'when params matches the required_params' do
+      [
+        ['Float', 4.1],
+        [{ 'name': 'String', 'age': 'Integer' }, { 'name': 'name', 'age': 1 }],
+        [{ 'name': 'String', 'age': { '$Optional' => 'Integer' } }, { 'name': 'name' }],
+        [[{ 'age': { '$Optional' => 'Integer' } }], [{}, { age: 12 }, {}]]
+      ].each do |required_params, params|
+        context "With required_params #{required_params.to_json} and params #{params.to_json}" do
+          let(:required_params) { required_params }
+          let(:params) { params }
+
+          it 'returns true' do
+            expect(subject).to be
+            expect(transformation.errors).to be_empty
+          end
+        end
       end
     end
   end
