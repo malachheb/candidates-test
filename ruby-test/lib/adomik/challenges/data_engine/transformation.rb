@@ -1,9 +1,10 @@
+# frozen_string_literal: true
+
 module Adomik
   module Challenges
     module DataEngine
       # Transformation define a  transformation created from a TransformationTemplate
       class Transformation
-
         attr_reader :rank, :params, :transformation_template, :errors
 
         def initialize(transformation_template, rank, params)
@@ -15,10 +16,9 @@ module Adomik
 
         def validate
           # validation logic
-          return @errors.empty?
+          @errors.empty?
         end
       end
-
     end
   end
 end

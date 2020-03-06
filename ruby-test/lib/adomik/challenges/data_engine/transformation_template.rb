@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Adomik
   module Challenges
     module DataEngine
@@ -14,7 +16,7 @@ module Adomik
         def validate
           # validation name presence
           # validation required_params
-          return @errors.empty?
+          @errors.empty?
         end
       end
     end

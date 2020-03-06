@@ -1,4 +1,6 @@
-require "adomik/challenges/version"
+# frozen_string_literal: true
+
+require 'adomik/challenges/version'
 
 module Adomik
   module Challenges
