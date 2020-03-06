@@ -9,7 +9,7 @@ module Adomik
         def initialize(transformation_template, rank, params)
           @transformation_template = transformation_template
           @rank = rank
-          @params = params
+          @params = JSON.parse(params.to_json)
           @errors = []
         end
 
@@ -20,8 +20,8 @@ module Adomik
           @errors << 'Transformation template invalid' unless @transformation_template.is_a? TransformationTemplate
 
           rq = JSON.parse(@transformation_template.required_params.to_json)
-          p = JSON.parse(@params.to_json)
-          validate_params(rq, p)
+
+          validate_params(rq, @params)
 
           @errors.empty?
         end

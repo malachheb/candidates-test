@@ -8,30 +8,31 @@ require 'adomik/challenges/data_engine/task_runner'
 describe Adomik::Challenges::DataEngine::Transformation do
   describe '.initialize' do
     it 'should work' do
-      rename_column = TransformationTemplate(
-        name: 'rename_column',
-        required_params: {
+      DE = Adomik::Challenges::DataEngine
+      rename_column = DE::TransformationTemplate.new(
+        'rename_column',
+        {
           column_name: 'String',
           new_name: 'String'
         }
       )
       
-      drop_columns = TransformationTemplate(
-        name: 'rename_column',
-        required_params: ['String']
+      drop_columns = DE::TransformationTemplate.new(
+        'drop_columns',
+        ['String']
       )
       
-      add_column_with_default_value = TransformationTemplate(
-        name: 'add_column_with_default_value',
-        required_params: {
+      add_column_with_default_value = DE::TransformationTemplate.new(
+        'add_column_with_default_value',
+        {
           column_name: 'String',
           default_value: 'Any'
         }
       )
       
-      convert_to_usd = TransformationTemplate(
-        name: 'convert_to_usd',
-        required_params: {
+      convert_to_usd = DE::TransformationTemplate.new(
+        'convert_to_usd',
+        {
           column_name: 'String',
           currency_column: 'String',
           rates: [{currency: 'String', rate: 'Float' }]
@@ -40,39 +41,41 @@ describe Adomik::Challenges::DataEngine::Transformation do
       
       
       transformations = [
-        Transformation.new(drop_columns, 1, ['transaction_type']),
-        Transformation.new(rename_column, 2, {
+        # DE::Transformation.new(drop_columns, 1, ['transaction_type']),
+        DE::Transformation.new(rename_column, 2, {
           column_name: 'seller_revenue',
           new_name: 'revenue'
         }),
-        Transformation.new(add_column_with_default_value, 3, {
-          column_name: 'currency',
-          default_value: 'EUR'
-        }),
-        Transformation.new(convert_to_usd, 4, {
-          column_name: 'revenue',
-          currency_column: 'currency',
-          rates: [
-            {currency: 'EUR', rate: 1.12 },
-            {currency: 'ARS', rate: 0.02 },
-            {currency: 'CNY', rate: 0.14 }
-          ]
-        }),
-        Transformation.new(drop_columns, 1, ['currency']),
-          Transformation.new(add_column_with_default_value, 5, {
-          column_name: 'currency',
-          default_value: 'USD'
-        }),
+        # DE::Transformation.new(add_column_with_default_value, 3, {
+        #   column_name: 'currency',
+        #   default_value: 'EUR'
+        # }),
+        # DE::Transformation.new(convert_to_usd, 4, {
+        #   column_name: 'revenue',
+        #   currency_column: 'currency',
+        #   rates: [
+        #     {currency: 'EUR', rate: 1.12 },
+        #     {currency: 'ARS', rate: 0.02 },
+        #     {currency: 'CNY', rate: 0.14 }
+        #   ]
+        # }),
+        # DE::Transformation.new(drop_columns, 1, ['currency']),
+        # DE::Transformation.new(add_column_with_default_value, 5, {
+        #   column_name: 'currency',
+        #   default_value: 'USD'
+        # }),
       ]
       
       input_path = 'input.csv'
       output_path = 'output.csv'
       
-      TaskRunner(
+      runner = DE::TaskRunner.new(
         input_path, # the csv input path
         transformations, # an Array of transformation
         output_path, # the csv output path
       )
+
+      runner.run
       
     end
   end

@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
 require 'bundler/setup'
-require 'adomik/ruby/challenges'
+require 'adomik/challenges'
+Bundler.require(:default, :development, :test)
 
 RSpec.configure do |config|
   # Enable flags like --only-failures and --next-failure
@@ -9,6 +10,8 @@ RSpec.configure do |config|
 
   # Disable RSpec exposing methods globally on `Module` and `main`
   config.disable_monkey_patching!
+
+  config.expose_dsl_globally = true
 
   config.expect_with :rspec do |c|
     c.syntax = :expect

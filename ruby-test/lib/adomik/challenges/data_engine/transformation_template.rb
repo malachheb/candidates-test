@@ -10,14 +10,13 @@ module Adomik
 
         def initialize(name, required_params)
           @name = name
-          @required_params = required_params
+          @required_params = JSON.parse(required_params.to_json)
           @errors = []
         end
 
         def validate
           @errors = []
-          rq = JSON.parse(@required_params.to_json)
-          validate_type(rq)
+          validate_type(required_params)
 
           @errors.empty?
         end
