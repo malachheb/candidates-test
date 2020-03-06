@@ -37,8 +37,6 @@ describe Adomik::Challenges::DataEngine::TransformationTemplate do
         'Float',
         'User',
         { '$Optional': 'String' },
-        ['String', 'Integer', { '$Optional': 'String' }],
-        ['String', 'Integer', { 'name': 'String' }],
         { 'user': 'User' },
         { 'name': 'String' },
         { 'name': 'String', 'mode': { '$Optional': 'String' } },
@@ -63,7 +61,6 @@ describe Adomik::Challenges::DataEngine::TransformationTemplate do
         'NotExistClass',
         { 'name': 1 },
         { 'class': 'NotExistClass' },
-        { '$optional' => 'String' },
         ['name']
       ].each do |example|
         context "when required_params is #{example}" do
