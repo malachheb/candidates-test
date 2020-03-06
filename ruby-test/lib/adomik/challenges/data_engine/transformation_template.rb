@@ -1,3 +1,4 @@
+require 'adomik/challenges/data_engine/helpers'
 # frozen_string_literal: true
 
 module Adomik
@@ -14,9 +15,40 @@ module Adomik
         end
 
         def validate
-          # validation name presence
-          # validation required_params
+          @errors = []
+          rq = JSON.parse(@required_params.to_json)
+          validate_type(rq)
+
           @errors.empty?
+        end
+
+        private
+
+        def validate_type(type)
+          if type.is_a?(String)
+            validate_string(type)
+          elsif type.is_a?(Hash)
+            type.values.all?{ |t| validate_type(t) }
+          elsif type.is_a?(Array)
+            validate_array(type)
+          else
+            @errors << 'Required params must be either Hash, String or Array'
+            false
+          end
+        end
+
+        def validate_array(type)
+          @errors << "Array must contain exactly one element #{type.to_json}" unless type.length == 1
+          validate_type(type[0])
+        end
+
+        def validate_string(type)
+          if get_class(type).nil?
+            @errors << "Type #{type} does not exist"
+            false
+          else
+            true
+          end
         end
       end
     end
