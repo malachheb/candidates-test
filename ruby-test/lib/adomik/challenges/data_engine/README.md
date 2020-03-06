@@ -5,34 +5,47 @@
 
 # DataEngine #1
 
-After collecting a CSV files, our data engine apply some transformations to generate a normalized new csv file.
-The collected CSV has a different schema and different content that why we need this normalisation step.
-To make this task,  the data  operation team must choose from a set of transformation predefined ( transformation Template) to apply for each csv file.
+## Introduction
 
-The DataEngine module have two class:
+At Adomik we collect a lot of CSV files from many different sources.
+
+The collected CSV have different schemas and different contents. To provide useful data we therefore need to normalize the data.
+
+To make integrating new sources as easy as possible, we need to build the DataEngine. Since adomik is short on resources, we let our candidates build this system for us ! (that was a joke of course)
+
+## Transformations
+
+The idea of the DataEngine is to have a list of **transformations**. Each transformation describes an action on one or more columns of the CSV file and will be executed one after the other.
+
+To catch errors early in the design process we also want to provide a TransformationTemplate that provides basic information about available transformations and some validations to check if the provided parameters are ok.
+
+So to summarize we would like to to have something like this:
 
   ```  TransformationTemplate(name, required_params) ```
   
   ```  Transformation(transformation_template, rank, params) ```
 
-  - the required_params must respect a specific schema
+TransformationTemplate
+  - The required_params define the parameters needed by the transformation to be done and also their types.
+  - required_params
+    - The required params accepts the following types:
+      -  Hash, Array, Integer, String, Float, Class ( a ruby defined class )
+    - For a Hash in the required params, the key represents the Hash key ans the value represent the Hash value type.
+    - The Array type contains exactly one type.
 
-  The first required params type must be a Hash or an Array.
-  The Hash type contain a key value params, the key represent the Hash key ans the value represent the Hash value type.
-  The Array type contain another Type.
-  The accepted types:
-       
-       
-       Hash, Array, Integer, String, Float, Class ( a ruby defined class )
-       
-       
+Transformation
+  - transformation_template
+    - The template for this transformation
+  - rank
+    - An integer to specify the order in which the transformations are executed (To persist the documents in a data base)
+  - params
+    - The arguments to this transformation
 
-  - The required_params define the params needed by the transformation to be done and also their types.
 
-`
+```
 tt = TransformationTemplate(
   name: rename_column,
-  required_params: "Hash(old_name: String, new_name: String)"
+  required_params: {old_name: String, new_name: String}"
 )
 Transformation(
   transformation_template: tt,
@@ -42,86 +55,162 @@ Transformation(
 
 tt = TransformationTemplate(
 	name: rename_column,
-	required_params: "Array(Integer)"
-      )
+	required_params: ['Integer']
+)
 Transformation(
   transformation_template: tt,
   rank: 1,
   params: [12,9,1]
 )
 
-user = User(name, email)
+user = User.new(name, email)
 tt = TransformationTemplate(
        name: rename_column,
-       required_params: "Array(User)"
+       required_params: ['User']
       )
 Transformation(
   transformation_template: tt,
   rank: 1,
   params: [user]
 )
-`
+```
 
-- The required params can have a nested attributes also.
+The required params can also contain nested attributes.
 
-`
+```
 tt = TransformationTemplate(
-  	name: convert_to_usd,
-    	required_params: "Hash(column_name: 'String', currency_column: 'String', rates: Array(Hash(currency: 'String', rate: 'Float' )))"
+  	name: 'convert_to_usd',
+    	required_params: {column_name: 'String', currency_column: 'String', rates: [{currency: 'String', rate: 'Float' }]}
 )
 Transformation(
   transformation_template: tt,
   rank: 1,
-  params: {column_name: 'revenue', column_currency: 'curr', rates: [ {currency: 'usd'; rate: 1.2}, {currency: 'eur'; rate: 1.5}]}
+  params: {column_name: 'revenue', currency_column: 'curr', rates: [ {currency: 'usd'; rate: 1.2}, {currency: 'eur'; rate: 1.5}]}
 )
-`
+```
 
- - The required params can have an Optional attribute, in this case the attribute can be absent on with value nil.
+The required params can have an **optional** attribute, in this case the attribute can be absent on with the value nil.
 
-`
- tt = TransformationTemplate(
-   name: convert_to_usd,
-     required_params: Hash(Optional(column_name: 'String'), currency_column: 'String', rates: Optional(Array(Hash(currency: 'String', rate: 'Float' ))) )"
+```
+tt = TransformationTemplate(
+  name: 'convert_to_usd',
+  required_params: {
+    column_name: { '$optional' => 'String'}},
+    currency_column: 'String',
+    rates: {'$optional' => [{currency: 'String', rate: 'Float' }]}
+  }
 )
 Transformation(
   transformation_template: tt,
   rank: 1
   params: {column_name: 'revenue', column_currency: 'curr', rates: [ {currency: 'usd'; rate: 1.2}, {currency: 'eur', rate: 1.5}]}
 )
-`
+```
 
-## Exercice
+### Exercise
 the goal of this exercise is to implement the two methods validate() in the class 
 
-`
+
 TransformationTemplate: 
- validate the the presence of name
- validate that the required_params have a correct format 
+  - validate the the presence of name
+  - validate that the required_params have a correct format 
 
 Transformation: 
- validate the the presence of rank 
- validate that rank is a positif Integer
- validate that the params respect the required params type 
- 
-`
+  - validate the the presence of rank 
+  - validate that rank is a positive Integer
+  - validate that the params respect the required params type 
 
-# DataEngine #1
+
+## TaskRunner
 
 After defining the Transformation for each CSV file the data operation team must add them to a TaskRunner to transform the input csv to an output csv files with executing each Transformation ordered by rank.
-`
+
+```
 TaskRunner(
   input_path, # the csv input path
   transformations, # an Array of transformation
   output_path, # the csv output path
 )
-  `
+```
 
-## Exercice
+### Exercise
 
-The goal of the exercise is to provide a design and an implementation to solve this problem. your are free to add any Ruby class you want. 
-We need just a class that contains the main method to transform an input CSV file to an output CSV file.
+The goal of the exercise is to provide a design and an implementation to solve this problem.
 
-A  collected CSV file can have less or more columns, so you must handle the case if a transformation don't found a column in the CSV.
 
-For this exercise we'll use only these three TransformationTemplate: rename_column, delete_column, add_column_with_default_value, convert_to_usd
+For this exercise we'll use only these 4 TransformationTemplates: rename_column, delete_columns, add_column_with_default_value (only if it does not exist), convert_to_usd
 
+A collected CSV file can potentially have missing columns, so you must handle the case if a transformation doesn't find a column in the CSV.
+
+On top of the implementation we would like you to implement your own unit tests to make sure your program is working correctly.
+
+Below you will fine an example that should convert the file input.csv to the output we are expecting.
+
+
+```
+rename_column = TransformationTemplate(
+  name: 'rename_column',
+  required_params: {
+    column_name: 'String',
+    new_name: 'String'
+  }
+)
+
+drop_columns = TransformationTemplate(
+  name: 'rename_column',
+  required_params: ['String']
+)
+
+add_column_with_default_value = TransformationTemplate(
+  name: 'add_column_with_default_value',
+  required_params: {
+    column_name: 'String',
+    default_value: 'Any'
+  }
+)
+
+convert_to_usd = TransformationTemplate(
+  name: 'convert_to_usd',
+  required_params: {
+    column_name: 'String',
+    currency_column: 'String',
+    rates: [{currency: 'String', rate: 'Float' }]
+  }
+)
+
+
+transformations = [
+  Transformation.new(drop_columns, 1, ['transaction_type']),
+  Transformation.new(rename_column, 2, {
+    column_name: 'seller_revenue',
+    new_name: 'revenue
+  }),
+  Transformation.new(add_column_with_default_value, 3, {
+    column_name: 'currency',
+    default_value: 'EUR'
+  }),
+  Transformation.new(convert_to_usd, 4, {
+    column_name: 'revenue',
+    currency_column: 'currency',
+    rates: [
+      {currency: 'EUR', rate: 1.12 },
+      {currency: 'ARS', rate: 0.02 },
+      {currency: 'CNY', rate: 0.14 }
+    ]
+  }),
+  Transformation.new(drop_columns, 1, ['currency']),
+    Transformation.new(add_column_with_default_value, 5, {
+    column_name: 'currency',
+    default_value: 'USD'
+  }),
+]
+
+input_path = 'input.csv'
+output_path = 'output.csv'
+
+TaskRunner(
+  input_path, # the csv input path
+  transformations, # an Array of transformation
+  output_path, # the csv output path
+)
+```
