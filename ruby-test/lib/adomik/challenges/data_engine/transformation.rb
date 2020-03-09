@@ -1,9 +1,10 @@
+# frozen_string_literal: true
+
 module Adomik
   module Challenges
     module DataEngine
       # Transformation define a  transformation created from a TransformationTemplate
       class Transformation
-
         attr_reader :rank, :params, :transformation_template, :errors
 
         def initialize(transformation_template, rank, params)
@@ -40,7 +41,6 @@ module Adomik
           end
         end
 
-
         def is_optional(schema)
           schema.is_a?(Hash) && schema.key?('$Optional')
         end
@@ -71,7 +71,7 @@ module Adomik
           end
 
           unless schema.length == 1
-            @errors << "The schema should have the length of 1"
+            @errors << 'The schema should have the length of 1'
             return false
           end
 
@@ -80,10 +80,9 @@ module Adomik
           end
         end
 
-
         def validate_type(schema, parameters)
           unless schema.is_a? String
-            @errors << "The schema can only be described in terms of strings, hashes and arrays"
+            @errors << 'The schema can only be described in terms of strings, hashes and arrays'
             return false
           end
 
@@ -121,7 +120,6 @@ module Adomik
           end
         end
       end
-
     end
   end
 end

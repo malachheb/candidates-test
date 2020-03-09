@@ -27,7 +27,7 @@ module Adomik
           if type.is_a?(String)
             validate_string(type)
           elsif type.is_a?(Hash)
-            type.values.all?{ |t| validate_type(t) }
+            type.values.all? { |t| validate_type(t) }
           elsif type.is_a?(Array)
             validate_array(type)
           else
