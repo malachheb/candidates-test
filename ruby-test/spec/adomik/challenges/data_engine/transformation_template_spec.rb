@@ -56,7 +56,6 @@ describe Adomik::Challenges::DataEngine::TransformationTemplate do
     context 'when required_params format is not valid' do
       [
         'string',
-        String,
         '1',
         'NotExistClass',
         { 'name': 1 },
